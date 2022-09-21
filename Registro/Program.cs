@@ -20,6 +20,9 @@ builder.Services.AddDbContext<Contexto>(con =>
 );
 
 builder.Services.AddTransient<OcupacionesBLL>();
+builder.Services.AddScoped<OcupacionesBLL>();
+builder.Services.AddScoped<PersonaBLL>();
+builder.Services.AddScoped<PrestamoBLL>();
 
 // agregando notificacion
 builder.Services.AddScoped<NotificationService>();

@@ -1,0 +1,68 @@
+@page "/C_prestamo"
+@inject PrestamoBLL prestamoBLL
+
+<EditForm Model="lista">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Consultas de prestamos</h3>
+        </div>
+
+        <div class="card-body">
+            <form>
+                <div class="input-group d-flex align-items-end">
+                    <button type="button" class="btn btn-warning" @onclick="Buscar">
+                       <i class="oi oi-magnifying-glass mr-2" > Generar</i> 
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-secondary">
+            <thead class="thead-dark">
+                <tr class="table-info">
+                    <th>PrestamoId</th>
+                    <th>PersonaId</th>
+                    <th>Fecha</th>
+                    <th>Vence</th>
+                    <th>Concepto</th>
+                    <th>Monto</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in P_lista)
+                {
+                    <tr>
+                        <td>@item.PrestamoId</td>
+                        <td>@item.Fecha</td>
+                        <td>@item.Vence</td>
+                        <td>@item.PersonaID</td>
+                        <td>@item.Concepto</td>
+                        <td>@item.Monto</td>
+                         <td>@item.Balance</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@code {
+    public Persona personas { set; get; } = new Persona();
+
+    public Prestamos prestamos { get; set; } = new Prestamos();
+    
+    public List<Persona> lista { get; set; } = new List<Persona>();
+    public List<Prestamos> P_lista { get; set; } = new List<Prestamos>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+    
+    private void Buscar()
+    {   
+        P_lista = prestamoBLL.GetList(o => true);
+    }
+}

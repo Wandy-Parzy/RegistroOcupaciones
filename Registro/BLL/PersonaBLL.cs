@@ -53,14 +53,7 @@ namespace Registro.BLL
                        .SingleOrDefault();
 
           }
-
-          public bool Editar(Persona persona)
-          {
-               if (!Existe(persona.PersonaId))
-                    return this.Insertar(persona);
-               else
-                    return this.Modificar(persona);
-          }
+          
           public List<Persona> GetList(Expression<Func<Persona, bool>> Criterio)
           {
                return _contexto.Persona

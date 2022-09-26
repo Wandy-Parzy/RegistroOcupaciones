@@ -1,12 +1,11 @@
-@page "/C_ocupaciones"
-
+ @page "/C_ocupaciones"
 @inject OcupacionesBLL OcupacionesBLL
 
 <EditForm Model="ocupaciones">
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
-            <h3>Consultar ocupaciones</h3>
+            <h3>Consultas de ocupaciones</h3>
 
         </div>
         <div class="card-body">
@@ -68,10 +67,7 @@
 
     private void Buscar()
     {
-        
-
         lista = ocupacionesBLL.GetOcupaciones();
-
     }
 
 }

@@ -40,6 +40,7 @@ public class OcupacionesBLL
         return cantidad > 0;
     }
 
+
     public Ocupaciones Buscar(int ocupacionId)
     {
         var ocupacion = _contexto.Ocupaciones.Find(ocupacionId);

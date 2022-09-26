@@ -34,6 +34,39 @@ namespace Registro.Migrations
 
                     b.ToTable("Ocupaciones");
                 });
+
+                  modelBuilder.Entity("RegistroOcupacion.Entidades.Persona", b =>
+                {
+                    b.Property<int>("PersonaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Celular")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OcupacionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Telefono")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("PersonaId");
+
+                    b.ToTable("Persona");
+                });
 #pragma warning restore 612, 618
         }
     }

@@ -53,7 +53,7 @@ namespace Registro.BLL
                        .SingleOrDefault();
 
           }
-          
+
           public List<Persona> GetList(Expression<Func<Persona, bool>> Criterio)
           {
                return _contexto.Persona

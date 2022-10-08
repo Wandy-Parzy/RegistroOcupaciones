@@ -1,7 +1,9 @@
 @page "/R_personas"
 @inject PersonaBLL personaBLL
 @inject NotificationService NotificationService
+
 <EditForm Model="personas" OnValidSubmit="Guardar">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="card">
@@ -37,7 +39,7 @@
 
                 @*Telefono*@
                 <div class="form-group">
-                    <label>Telefono</label>
+                    <label>Teléfono</label>
                     <InputNumber @bind-Value="personas.Telefono" class="form-control" />
                     <ValidationMessage For="@(() => personas.Telefono)" />
                 </div>
@@ -57,40 +59,46 @@
 
                 @*Direccion*@
                 <div class="form-group">
-                    <label>Direccion</label>
+                    <label>Dirección</label>
                     <InputText @bind-Value="personas.Direccion" class="form-control" />
                     <ValidationMessage For="@(() => personas.Direccion)" />
                 </div>
 
                 @*FechaNacimiento*@
-                <div class="input-group">
-                    <span class="input-group-text">Fecha</span>
-                    <input type="date" @bind-value="personas.FechaNacimiento" />
+                <div class="form-group">
+                    <label>Fecha De Nacimiento</label>
+                    <InputDate @bind-Value="personas.FechaNacimiento"
+                                 class="form-control" />
+                    <ValidationMessage For="@(() => personas.FechaNacimiento)" />
                 </div>
-                <ValidationMessage For="@(() => personas.FechaNacimiento)" />
 
                 @*OcupacionID*@
-                <div class="form-group">
-                    <label>OcupacionId</label>
-                    <div class="input-group">
-                        <InputNumber @bind-Value="personas.OcupacionId" class="form-control col-4" />
-                        <div class="input-group-append">
+                    <div class="form-group">
+                        <label>OcupaciónId</label>
+                        <div class="input-group">
+                            <InputNumber @bind-Value="personas.OcupacionId" class="form-control col-4" />
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary input-group-text"
-                                    @onclick="Buscar">Buscar</button>
-                             </div>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text"
+                                        @onclick="Buscar">Buscar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
             </div>
             <div class="card-footer">
                 <div class="form-group text-center" display: inline-block>
-                    <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
-                    <button type="submit" class="btn btn-lg btn-success">Guardar</button>
-                    <button type="submit" class="btn btn-lg btn-success">Editar</button>
-                    <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
-                </div>
+                    <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo
+                    <i class=" bi bi-clipboard2"></i>
+                </button>
+                <button type="submit" class="btn btn-lg btn-success ">Guardar
+                    <i class=" bi bi-journal-bookmark-fill"></i>
+                </button>
+                <button type="button" class="btn btn-lg btn-danger bi bi-trash" @onclick="Eliminar">Eliminar
+                    <i class=" bi bi-trash"></i>
+                </button>
+            </div>
             </div>
         </div>
     </div>
@@ -105,42 +113,28 @@
     public int OcupacionId { get; set; }
 
     public int personaId { get; set; }
-    public string Filtro { get; set; } = "";
-    public string Criterio { get; set; } = "";
 
-
-    public String mensaje { get; set; } = "";
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-      
-    }
-
-    private void Nuevo()
-    {
-        ocupacion = new Ocupaciones();
-    }
-
-    private void Buscar()
-    {
-        if (ocupacion.OcupacionId > 0)
+        if (personaId > 0)
         {
-              var encontrado = personaBLL.Buscar(ocupacion.OcupacionId);
-            Nuevo();
-            if (encontrado != null)
-                this.personas = encontrado;
-            else
-            {
-            }  
+            this.personas.PersonaId = personaId;
+            this.Buscar();
 
         }
+        lista = personaBLL.GetOcupaciones(c => true);
+    }
+
+    public void Nuevo()
+    {
+        personas = new Persona();
     }
 
     public void Guardar()
     {
-        var guardado = personaBLL.Guardar(personas);
 
+        bool guardado = personaBLL.Guardar(personas);
         if (guardado)
         {
             Nuevo();
@@ -150,15 +144,25 @@
                 Severity = NotificationSeverity.Success,
                 Summary = "Guardado correctamente"
             });
+ 
         }
         else
         {
-
+           
         }
+    }
+    private void Buscar()
+    {
+        if (personas.PersonaId > 0 || ocupacion.OcupacionId > 0)
+        {
+            var encontrado = personaBLL.Buscar(personas.PersonaId);
 
+            if (encontrado != null)
+                this.personas = encontrado;
+        }
     }
 
-     public void Eliminar()
+    public void Eliminar()
     {
         bool elimino;
 
@@ -167,14 +171,12 @@
         if (elimino)
         {
             Nuevo();
-            //toast.ShowSuccess("Eliminado correctamente");
         }
-        // else
-        // toast.ShowError("No fue posible eliminar");
     }
-     void ShowNotification(NotificationMessage message)
+      void ShowNotification(NotificationMessage message)
     {
         NotificationService.Notify(message);
 
     }
+
 }

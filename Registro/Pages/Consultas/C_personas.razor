@@ -11,7 +11,9 @@
         <div class="card-body">
             <form>
                 <div class="input-group d-flex align-items-end">
-                    <button type="button" class="btn btn-warning" @onclick="Buscar">Generar</button>
+                    <button type="button" class="btn btn-warning" @onclick="Buscar">
+                        <i class="oi oi-magnifying-glass mr-2" > Generar </i>
+                    </button>
                 </div>
             </form>
         </div>
@@ -21,12 +23,12 @@
                 <tr class="table-info">
                     <th>PersonaId</th>
                     <th>Nombre</th>
-                    <th>Telefono</th>
+                    <th>Teléfono</th>
                     <th>Celular</th>
                     <th>Email</th>
-                    <th>Direccion</th>
+                    <th>Dirección</th>
                     <th>FechaNacimiento</th>
-                    <th>OcupacionId</th>
+                    <th>OcupaciónId</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,9 +58,7 @@
 
     [Inject]
     private OcupacionesBLL ocupacionesBLL { get; set; }
-    public string Filtro{ get; set; }
-    public string Criterio{ get; set; }
-
+ 
     protected override void OnInitialized()
     {
         base.OnInitialized();

@@ -12,6 +12,6 @@ namespace Registro.Model
         public string? Descripcion { get; set; }
 
         [Range(minimum : 100, maximum:100000, ErrorMessage = "El valor debe ser mayor a 100")]
-        public int Salario  { get; set; }
+        public double Salario  { get; set; }
     }
 }

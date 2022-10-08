@@ -14,7 +14,7 @@ namespace Registro.Model
           [Required(ErrorMessage = "El numero de telefono es requerido")]
           public double Telefono { get; set; }
 
-          [Required(ErrorMessage = "El numero de celular es requerido")]
+          [Required(ErrorMessage = "El numero de telefono es requerido")]
           public double Celular { get; set; }
 
           public string? Email { get; set; }

@@ -1,2 +1,0 @@
-# RegistroOcupaciones
-Registro de ocupaciones

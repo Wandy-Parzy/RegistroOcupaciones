@@ -6,7 +6,7 @@ namespace Registro.Model
      {
           [Key]
 
-          [Required(ErrorMessage = "El ID no puede ser cero")]
+      
           public int PrestamoId { get; set; }
 
           public DateTime Fecha { get; set; } = DateTime.Now;

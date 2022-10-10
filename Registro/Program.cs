@@ -23,6 +23,7 @@ builder.Services.AddTransient<OcupacionesBLL>();
 builder.Services.AddScoped<OcupacionesBLL>();
 builder.Services.AddScoped<PersonaBLL>();
 builder.Services.AddScoped<PrestamoBLL>();
+builder.Services.AddScoped<PagosBLL>();
 
 // agregando notificacion
 builder.Services.AddScoped<NotificationService>();

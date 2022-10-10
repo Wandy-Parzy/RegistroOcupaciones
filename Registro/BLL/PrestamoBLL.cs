@@ -68,13 +68,5 @@ namespace Registro.BLL
                 .Where(Criterio)
                 .ToList();
         }
-
-          public List<Ocupaciones> GetOcupaciones(Expression<Func<Ocupaciones, bool>> Criterio){
-            return _contexto.Ocupaciones
-                .AsNoTracking()
-                .Where(Criterio)
-                .ToList();
-        }
-
      }
 }

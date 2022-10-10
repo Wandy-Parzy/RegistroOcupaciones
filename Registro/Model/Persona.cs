@@ -25,7 +25,7 @@ namespace Registro.Model
           
           public  DateTime FechaNacimiento { get; set; }= DateTime.Now;
 
-          [Range(1,int.MaxValue,ErrorMessage ="El selecionar una ocupacion")]
+          [Range(1,int.MaxValue,ErrorMessage ="Debe selecionar un Id")]
 
            public int OcupacionId { get; set; }
 

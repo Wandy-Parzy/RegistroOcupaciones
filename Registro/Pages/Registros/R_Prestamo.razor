@@ -126,6 +126,11 @@
         prestamos = new Prestamos();
     }
 
+     bool Validar()
+    {
+        return prestamos.Concepto.Contains("");
+    }
+
     public void Guardar()
     {
  

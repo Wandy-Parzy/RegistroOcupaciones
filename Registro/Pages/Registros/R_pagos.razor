@@ -1,0 +1,184 @@
+@page "/R_Pagos"
+@inject PagosBLL pagosBLL
+@inject NotificationService NotificationService
+
+
+ <EditForm Model="pagos" OnValidSubmit="Guardar">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de pagos</h3>
+        </div>
+        <div class="card-body">
+
+            @*PersonaId*@
+            <div class="form-r ow align-items-center">
+                <div class="col">
+                    <div class="m-3">
+                        <label>PagosId</label>
+                        <div class="input-group">
+                            <InputNumber @bind-Value="pagos.PagosId" class="form-control col-4" />
+                            <div class="input-group-append">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text"
+                                        @onclick="Buscar">Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            @*Fecha*@
+            <div class="m-3">
+                <label>Fecha</label>
+                <InputDate @bind-Value="pagos.Fecha"
+                    class="form-control" />
+                 <ValidationMessage For="@(() => pagos.Fecha)" />
+            </div>
+
+             @*PersonaId*@
+            <div class="m-3">
+                <label>PersonaId</label>
+                <div class="input-group">
+                    <InputNumber @bind-Value="pagos.PersonaId" class="form-control col-4" />
+                    <div class="input-group-append">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary input-group-text"
+                                @onclick="Buscar">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             @*Concepto*@
+            <div class="m-3">
+                <label>Concepto</label>
+                <InputText @bind-Value="pagos.Concepto" class="form-control" />
+                <ValidationMessage For="@(() => pagos.Concepto)" />
+            </div>
+
+         @*Monto*@
+            <div class="m-3">
+                <label>Monto</label>
+                <InputNumber @bind-Value="pagos.Monto" class="form-control" />
+                <ValidationMessage For="@(() => pagos.Monto)" />
+            </div>
+
+            <div class="card-footer">
+                <div class="form-group text-center" display: inline-block>
+                   <button type="button" class="btn btn-lg btn-primary" @onclick="Editar">Editar
+                    <i class=" bi bi-clipboard2"></i>
+                </button>
+                <button type="submit" class="btn btn-lg btn-success ">Guardar
+                    <i class=" bi bi-journal-bookmark-fill"></i>
+                </button>
+                <button type="button" class="btn btn-lg btn-danger bi bi-trash" @onclick="Eliminar">Eliminar
+                    <i class=" bi bi-trash"></i>
+                </button>
+            </div>
+            </div>
+ </div>
+    </div>
+     </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int PagosId { get; set; }
+    public Pagos pagos { get; set; } = new Pagos();
+
+    public List<Pagos> lista { get; set; } = new List<Pagos>();
+
+    protected override void OnInitialized()
+    {
+        if (PagosId > 0)
+        {
+            this.pagos.PagosId = PagosId;
+            this.Buscar();
+        }
+    }
+
+    public void Nuevo()
+    {
+        pagos = new Pagos();
+    }
+
+    bool Validar()
+    {
+        return pagos.Concepto.Contains(".");
+    }
+
+    public void Guardar()
+    {
+
+        bool guardado = pagosBLL.Guardar(pagos);
+
+        if (guardado)
+        {
+            Nuevo();
+            ShowNotification(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Guardado correctamente"
+            });
+            
+        }
+        else
+        {
+            
+        }
+    }
+    private void Buscar()
+    {
+        if (pagos.PagosId > 0)
+        {
+            var encontrado = pagosBLL.Buscar(pagos.PagosId);
+
+            if (encontrado != null)
+                this.pagos = encontrado;
+        }
+    }
+
+   public void Eliminar()
+    {
+        var elimino = pagosBLL.Eliminar(pagos);
+        if (elimino)
+        {
+            Nuevo();
+            ShowNotification(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Eliminado correctamente"
+            });
+            
+        }
+        else
+        {
+            ShowNotification(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = " No eliminado correctamente"
+            }); 
+        }
+    }
+     public void Editar()
+    {
+
+        var editar = pagosBLL.Editar(pagos);
+
+    }
+
+      void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+
+    }
+
+}

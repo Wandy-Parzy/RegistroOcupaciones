@@ -178,11 +178,7 @@
     }
 
     public void  AddDetalle(){
-        this.pago.Detalles.Add(new PagosDetalle(Id, PagoId, PrestamoId, ValorPagado));
-        Id = 0;
-        PagoId = 0;
-        PrestamoId = 0;
-        ValorPagado = 0;
+        
     }      
 
     bool Validar()

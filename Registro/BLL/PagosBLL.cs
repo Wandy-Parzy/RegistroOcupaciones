@@ -13,49 +13,49 @@ namespace Registro.BLL
           {
                _contexto = contexto;
           }
-                    public bool Existe(int PagosId)
+                    public bool Existe(int PagoId)
           {
-               return _contexto.Pagos.Any(o => o.PagosId == PagosId);
+               return _contexto.Pagos.Any(o => o.PagoId == PagoId);
           }
 
-          private bool Insertar(Pagos pagos)
+          private bool Insertar(Pagos pago)
           {
-               _contexto.Pagos.Add(pagos);
+               _contexto.Pagos.Add(pago);
                return _contexto.SaveChanges() > 0;
           }
 
-          private bool Modificar(Pagos pagos)
+          private bool Modificar(Pagos pago)
           {
-               _contexto.Entry(pagos).State = EntityState.Modified;
+               _contexto.Entry(pago).State = EntityState.Modified;
                return _contexto.SaveChanges() > 0;
           }
 
-          public bool Guardar(Pagos pagos)
+          public bool Guardar(Pagos pago)
           {
-               if (!Existe(pagos.PagosId))
-                    return this.Insertar(pagos);
+               if (!Existe(pago.PagoId))
+                    return this.Insertar(pago);
                else
-                    return this.Modificar(pagos);
+                    return this.Modificar(pago);
           }
 
-          public bool Eliminar(Pagos pagos)
+          public bool Eliminar(Pagos pago)
           {
-               _contexto.Entry(pagos).State = EntityState.Deleted;
+               _contexto.Entry(pago).State = EntityState.Deleted;
                return _contexto.SaveChanges() > 0;
           }
 
              public bool Editar(Pagos Pagos)
           {
-               if (!Existe(Pagos.PagosId))
+               if (!Existe(Pagos.PagoId))
                     return this.Insertar(Pagos);
                else
                     return this.Modificar(Pagos);
           }
 
-          public Pagos? Buscar(int pagos)
+          public Pagos? Buscar(int pago)
           {
                return _contexto.Pagos
-                       .Where(o => o.PagosId == pagos)
+                       .Where(o => o.PagoId == pago)
                        .AsNoTracking()
                        .SingleOrDefault();
 

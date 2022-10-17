@@ -21,7 +21,7 @@ namespace Registro.Model
 
           public string? Direccion { get; set; }
   
-     
+          public double Balance { get; set; }
           
           public  DateTime FechaNacimiento { get; set; }= DateTime.Now;
 

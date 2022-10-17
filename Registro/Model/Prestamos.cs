@@ -16,6 +16,8 @@ namespace Registro.Model
           
           public double Monto { get; set; }
 
+          [Required(ErrorMessage = "El concepto es requerido")]
+
           public string? Concepto { get; set; }
 
           public double Balance { get; set; }
@@ -23,7 +25,7 @@ namespace Registro.Model
 
            [Required(ErrorMessage = "El ID no puede ser cero")]
 
-           public int PersonaID { get; set; }
+           public int PersonaId { get; set; }
 
      }
 }

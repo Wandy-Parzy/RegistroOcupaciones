@@ -5,7 +5,7 @@
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
-            <h3>Consultas de pagos</h3>
+            <h3>Consultas de pago</h3>
         </div>
 
         <div class="card-body">
@@ -30,7 +30,7 @@
                 @foreach (var item in lista)
                 {
                     <tr>
-                        <td>@item.PagosId</td>
+                        <td>@item.PagoId</td>
                         <td>@item.Fecha</td>
                         <td>@item.PersonaId</td>
                         <td>@item.Concepto</td>
@@ -43,7 +43,7 @@
 </EditForm>
 
 @code {
-    public Pagos  pagos {set;get;}= new Pagos();
+    public Pagos  pago {set;get;}= new Pagos();
     public string Filtro{ get; set; }
     public string Criterio{ get; set; }
 

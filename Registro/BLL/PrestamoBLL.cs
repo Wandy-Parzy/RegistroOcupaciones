@@ -21,14 +21,34 @@ namespace Registro.BLL
 
           private bool Insertar(Prestamos prestamos)
           {
-               _contexto.Prestamos.Add(prestamos);
-               return _contexto.SaveChanges() > 0;
+             _contexto.Prestamos.Add(prestamos);
+            
+            var personas = _contexto.Persona.Find(prestamos.PersonaId);
+            personas.Balance += prestamos.Monto;
+            
+            int cantidad = _contexto.SaveChanges();
+            
+            return cantidad > 0;
           }
 
-          private bool Modificar(Prestamos prestamos)
+          private bool Modificar(Prestamos prestamoActual)
           {
-               _contexto.Entry(prestamos).State = EntityState.Modified;
-               return _contexto.SaveChanges() > 0;
+               //descontar el monto anterior
+               var prestamoAnterior = _contexto.Prestamos
+                .Where(p => p.PrestamoId == prestamoActual.PrestamoId)
+                .AsNoTracking()
+                .SingleOrDefault();
+
+            var personaAnterior = _contexto.Persona.Find(prestamoAnterior.PersonaId);
+            personaAnterior.Balance -= prestamoAnterior.Monto;
+
+            _contexto.Entry(prestamoActual).State = EntityState.Modified;
+            
+            //descontar el monto nuevo
+            var persona = _contexto.Persona.Find(prestamoActual.PersonaId);
+            persona.Balance += prestamoActual.Monto;
+
+            return _contexto.SaveChanges() > 0;
           }
 
           public bool Guardar(Prestamos prestamos)
@@ -41,6 +61,9 @@ namespace Registro.BLL
 
           public bool Eliminar(Prestamos prestamos)
           {
+               var persona = _contexto.Persona.Find(prestamos.PersonaId);
+               persona.Balance -= prestamos.Monto;
+            
                _contexto.Entry(prestamos).State = EntityState.Deleted;
                return _contexto.SaveChanges() > 0;
           }

@@ -11,16 +11,15 @@
             <h3>Registro de ocupaciones</h3>
         </div>
         <div class="card-body">
-
             @*OcupacionId*@
-            <div class="form-r ow align-items-center">
+            <div class="form-row align-items-center">
                 <div class="col">
-                    <div class="form-group">
-                        <label>OcupaciónId</label>
+                    <div class="mb-3">
+                        <label>OcupacionId</label>
                         <div class="input-group">
                             <InputNumber @bind-Value="ocupacion.OcupacionId" class="form-control col-4" />
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">Buscar</button>
+                                <button class="btn btn-outline-primary" type="button" @onclick="Buscar"> <i class="oi oi-magnifying-glass" /> </button>
                             </div>
                         </div>
                     </div>
@@ -46,14 +45,11 @@
         </div>
         <div class="card-footer">
             <div class="form-group text-center" display: inline-block>
-                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo
-                    <i class=" bi bi-clipboard2"></i>
+                <button type="button" class=" bi bi-clipboard2 btn btn-lg btn-primary" @onclick="Nuevo">Nuevo
                 </button>
-                <button type="submit" class="btn btn-lg btn-success ">Guardar
-                    <i class=" bi bi-journal-bookmark-fill"></i>
+                <button type="submit" class=" bi bi-journal-bookmark-fill btn btn-lg btn-success ">Guardar
                 </button>
-                <button type="button" class="btn btn-lg btn-danger bi bi-trash" @onclick="Eliminar">Eliminar
-                     <i class=" bi bi-trash"></i>
+                <button type="button" class=" bi bi-trash btn btn-lg btn-danger " @onclick="Eliminar">Eliminar  
                 </button>
             </div>
         </div>

@@ -73,9 +73,13 @@
                 <ValidationMessage For="@(() => pago.Monto)" />
             </div>
 
-        <div class="card-header">
-            <h3>Pagos de detalle</h3>
-        </div>
+
+            <div class="card-header">
+                <h3>Pagos de detalle</h3>
+            </div>
+
+            <form>
+            <div class="row input-group d-flex align-items-end">
 
               @*PrestamoId*@
                     <div class="col-md-2">
@@ -97,10 +101,9 @@
                 <ValidationMessage For="@(() => pagosDetalle.ValorPagado)" />
             </div>
 
-            @*<button type="button" class="btn btn-success col" @onclick="AddDetalle">
+            <button type="button" class="btn btn-success col-md-2" @onclick="AddDetalle">
                 Agregar
             </button>
-            *@
              </div>
                         <br>
                         <table class="table">
@@ -120,7 +123,7 @@
                                 }
                             </tbody>
                         </table>
-              
+                    </form>
 
             <div class="card-footer">
                 <div class="form-group text-center" display: inline-block>
@@ -134,7 +137,7 @@
             </div>
  </div>
 </div>
-
+</div>
 </EditForm>
 
 @code {
@@ -142,6 +145,9 @@
     [Parameter]
 
     public int PagoId { get; set; }
+    public int Id { get; set; }
+    public int PrestamoId { get; set; }
+    public int ValorPagado { get; set; }
     public Pagos pago { get; set; } = new Pagos();
     public Persona persona { get; set; } = new Persona();
     public Prestamos prestamo { get; set; } = new Prestamos();
@@ -150,8 +156,7 @@
     public List<Pagos> lista { get; set; } = new List<Pagos>();
     public List<Persona> P_lista = new List<Persona>();
     public List<Prestamos> Plista = new List<Prestamos>();
-
-    public List<PagosDetalle> detalles = new List<PagosDetalle>();
+   public List<PagosDetalle> detalles = new List<PagosDetalle>();
       
 
     protected override void OnInitialized()
@@ -172,7 +177,13 @@
         pago = new Pagos();
     }
 
- 
+    public void  AddDetalle(){
+        this.pago.Detalles.Add(new PagosDetalle(Id, PagoId, PrestamoId, ValorPagado));
+        Id = 0;
+        PagoId = 0;
+        PrestamoId = 0;
+        ValorPagado = 0;
+    }      
 
     bool Validar()
     {

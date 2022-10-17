@@ -33,6 +33,27 @@ namespace Registro.Model
           public int PrestamoId { get; set; }
 
           public int ValorPagado{ get; set; }
+
+          
+          
+          public PagosDetalle(){
+
+          this.Id = 0;
+          this.PagoId = 0;
+          this.PrestamoId = 0;
+          this.ValorPagado = 0;
+          }
+
+          public PagosDetalle( int Id, int PagoId, int PrestamoId, int ValorPagado)
+          {
+               Id = 0;
+               PagoId = 0;
+               PrestamoId = 0;
+               ValorPagado = 0;
+          }
           
       }
+
+   
+
 }

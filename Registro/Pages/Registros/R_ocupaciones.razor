@@ -125,10 +125,8 @@
 
     public void Eliminar()
     {
-        bool elimino;
 
-        elimino = OcupacionesBLL.Eliminar(ocupacion);
-
+        var elimino = OcupacionesBLL.Eliminar(ocupacion);
         if (elimino)
         {
             Nuevo();

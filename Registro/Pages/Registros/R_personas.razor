@@ -124,7 +124,6 @@
     public void Nuevo()
     {
         personas = new Persona();
-        personas.FechaNacimiento = DateTime.Now;
         notificacion.ShowNotification("Nueva plantilla.", NotificationSeverity.Success);
     }
 
@@ -167,10 +166,7 @@
     }
     public void Eliminar()
     {
-        bool elimino;
-
-        elimino = personaBLL.Eliminar(personas);
-
+        var elimino = personaBLL.Eliminar(personas);
         if (elimino)
         {
             Nuevo();

@@ -72,8 +72,20 @@
                     <ValidationMessage For="@(() => pago.Monto)" />
                 </div>
 
-
-                <div class="card-header">
+                <div class="card-footer">
+                    <div class="mb-3 text-center" display: inline-block>
+                        <button type="button" class="btn btn-lg btn-primary" @onclick="Editar">
+                            <i class="oi oi-file" /> Editar
+                        </button>
+                        <button type="submit" class="btn btn-lg btn-success">
+                            <i class="oi oi-document" /> Guardar
+                        </button>
+                        <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">
+                            <i class="oi oi-trash" /> Eliminar
+                        </button>
+                    </div>
+                </div>
+             <div class="card-header">
                     <h3>Pagos de detalle</h3>
                 </div>
 
@@ -123,20 +135,6 @@
                         </tbody>
                     </table>
                 </form>
-
-                <div class="card-footer">
-                    <div class="mb-3 text-center" display: inline-block>
-                        <button type="button" class="btn btn-lg btn-primary" @onclick="Editar">
-                            <i class="oi oi-file" /> Editar
-                        </button>
-                        <button type="submit" class="btn btn-lg btn-success">
-                            <i class="oi oi-document" /> Guardar
-                        </button>
-                        <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">
-                            <i class="oi oi-trash" /> Eliminar
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -188,10 +186,6 @@
         this.pago.Detalles.Add(new PagosDetalle(Id, PagoId, PrestamoId, ValorPagado));
 
     }
-    private void RemoverFila(PagosDetalle pagosDetalles)
-    {
-        this.pago.Detalles.Remove(pagosDetalles);
-    }
 
     bool Validar()
     {
@@ -235,7 +229,7 @@
 
     public void Eliminar()
     {
-        var elimino = pagosBLL.Eliminar(Id);
+        var elimino = pagosBLL.Eliminar(pago.PagoId);
         if (elimino)
         {
             Nuevo();

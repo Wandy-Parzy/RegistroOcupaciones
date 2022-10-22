@@ -61,19 +61,10 @@ namespace Registro.BLL
 
           public bool Guardar(Pagos pago)
           {
-               bool paso = false;
-
-               try{
-                    if(_contexto.Pagos.Add(pago) != null)
-                    paso  = _contexto.SaveChanges() > 0;
-               }
-               catch(Exception){
-                    throw;
-               }
-               finally{
-                    _contexto.Dispose();
-               }
-               return paso;
+               if (!Existe(pago.PagoId))
+                    return this.Insertar(pago);
+               else
+                    return this.Modificar(pago);
           }
 
           public bool Eliminar(int Id)

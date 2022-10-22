@@ -163,10 +163,8 @@
 
     public void Eliminar()
     {
-        bool elimino;
 
-        elimino = prestamoBLL.Eliminar(prestamos);
-
+       var elimino = prestamoBLL.Eliminar(prestamos);
         if (elimino)
         {
             Nuevo();

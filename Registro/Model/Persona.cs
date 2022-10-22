@@ -11,10 +11,8 @@ namespace Registro.Model
           [Required(ErrorMessage = "La nombre de la persona es requerido")]
           public string? Nombre { get; set; }
 
-          [Required(ErrorMessage = "El numero de telefono es requerido")]
           public double Telefono { get; set; }
 
-          [Required(ErrorMessage = "El numero de celular es requerido")]
           public double Celular { get; set; }
 
           public string? Email { get; set; }
@@ -23,11 +21,10 @@ namespace Registro.Model
   
           public double Balance { get; set; }
           
-          public  DateTime FechaNacimiento { get; set; }= DateTime.Now;
+          public  DateTime FechaNacimiento { get; set; }
 
-          [Range(1,int.MaxValue,ErrorMessage ="Debe selecionar un Id")]
-
-           public int OcupacionId { get; set; }
+          [Required(ErrorMessage = "El id de una ocupacion es requerido")]     
+          public int OcupacionId { get; set; }
 
      }
 }

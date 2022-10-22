@@ -22,8 +22,9 @@ namespace Registro.BLL
           private bool Insertar(Persona persona)
           {
                _contexto.Persona.Add(persona);
-               return _contexto.SaveChanges() > 0;
-          }
+               int cantidad = _contexto.SaveChanges();
+                return cantidad > 0;
+          }    
 
           private bool Modificar(Persona persona)
           {

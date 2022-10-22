@@ -9,11 +9,13 @@ namespace Registro.Model
 
        public int PagoId { get; set; }
 
+       [Required(ErrorMessage = "La fecha es obligatoria")]   
        public DateTime Fecha { get; set; }
        
+       [Required(ErrorMessage = "La Persona es Obligatoria")]
        public int PersonaId { get; set; }
  
-       [ForeignKey("OrdenId")]
+       [ForeignKey("PagoId")]
 
        public virtual List<PagosDetalle> Detalles { get; set; } = new List<PagosDetalle>();
      
@@ -24,36 +26,4 @@ namespace Registro.Model
         public double Monto { get; set; }
    
      }
-     public class PagosDetalle { 
-
-          public int Id { get; set; }
-
-          public int PagoId { get; set; }
-
-          public int PrestamoId { get; set; }
-
-          public int ValorPagado{ get; set; }
-
-          
-          
-          public PagosDetalle(){
-
-          this.Id = 0;
-          this.PagoId = 0;
-          this.PrestamoId = 0;
-          this.ValorPagado = 0;
-          }
-
-          public PagosDetalle( int Id, int PagoId, int PrestamoId, int ValorPagado)
-          {
-               Id = 0;
-               PagoId = 0;
-               PrestamoId = 0;
-               ValorPagado = 0;
-          }
-          
-      }
-
-   
-
 }

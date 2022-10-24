@@ -74,7 +74,7 @@
                 <div class="mb-3 col">
                     <label>Ocupaciones</label>
                     <InputSelect class="form-select" @bind-Value="personas.OcupacionId">
-                        @foreach (Ocupaciones ocupacion in lista)
+                        @foreach (Ocupaciones ocupacion in listaOcupaciones)
                         {
                             <option value="@ocupacion.OcupacionId">@ocupacion.Descripcion</option>
                         }
@@ -104,13 +104,13 @@
     public Ocupaciones ocupacion { get; set; } = new Ocupaciones();
     public Persona personas { get; set; } = new Persona();
 
-    public List<Ocupaciones> lista = new List<Ocupaciones>();
+    public List<Ocupaciones> listaOcupaciones = new List<Ocupaciones>();
     public int OcupacionId { get; set; }
 
     public int personaId { get; set; }
 
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
         if (personaId > 0)
         {
@@ -118,13 +118,12 @@
             this.Buscar();
 
         }
-        lista = personaBLL.GetOcupaciones(c => true);
+        listaOcupaciones = await personaBLL.GetOcupaciones(c => true);
     }
 
     public void Nuevo()
     {
         personas = new Persona();
-        personas.FechaNacimiento = DateTime.Now;
         notificacion.ShowNotification("Nueva plantilla.", NotificationSeverity.Success);
     }
 
@@ -133,10 +132,10 @@
         return personas.Email.Contains(".com");
     }
 
-    public void Guardar()
+    public async Task Guardar()
     {
 
-        bool guardado = personaBLL.Guardar(personas);
+        bool guardado = await personaBLL.Guardar(personas);
         if (guardado)
         {
             Nuevo();
@@ -148,11 +147,11 @@
         }
     }
 
-    private void Buscar()
+    private async Task Buscar()
     {
         if (personas.PersonaId > 0 || ocupacion.OcupacionId > 0)
         {
-            var encontrado = personaBLL.Buscar(personas.PersonaId);
+            var encontrado = await personaBLL.Buscar(personas.PersonaId);
 
             if (encontrado != null)
             {
@@ -165,12 +164,9 @@
             }
         }
     }
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        elimino = personaBLL.Eliminar(personas);
-
+        var elimino = await personaBLL.Eliminar(personas);
         if (elimino)
         {
             Nuevo();

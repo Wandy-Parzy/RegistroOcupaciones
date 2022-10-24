@@ -59,17 +59,16 @@
      [Inject]
     private OcupacionesBLL ocupacionesBLL { get; set; }
 
-    protected override void OnInitialized()
+   protected override void OnInitialized()
     {
         base.OnInitialized();
-      
     }
 
-    private void Buscar()
+    private async Task Buscar()
     {
         
 
-        lista = ocupacionesBLL.GetOcupaciones();
+        lista = await ocupacionesBLL.GetOcupaciones(o => true);
 
     }
 

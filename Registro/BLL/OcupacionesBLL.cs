@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Registro.Model;
-using Registro.DAL;
+using Registro.Data;
 
 namespace Registro.BLL
 {
@@ -13,48 +13,52 @@ public class OcupacionesBLL
         _contexto = contexto;
     }
 
-    public bool Guardar(Ocupaciones ocupacion)
-    {
-        if (!Existe(ocupacion.OcupacionId))
-            return Insertar(ocupacion);
-        else
-            return Modificar(ocupacion);
-    }
+    public async Task<bool> Existe(int ocupacionId)
+        {
+            return  await _contexto.Ocupaciones.AnyAsync(o => o.OcupacionId == ocupacionId);
+        }
+    public async Task<bool>  Guardar(Ocupaciones ocupacion)
+          {
+               if (!await Existe(ocupacion.OcupacionId))
+                    return await this.Insertar(ocupacion);
+               else
+                    return await this.Modificar(ocupacion);
+          }
 
-    public bool Existe(int ocupacionId)
+    private  async Task<bool> Insertar(Ocupaciones ocupacion)
     {
-        return _contexto.Ocupaciones.Any(o => o.OcupacionId == ocupacionId);
-    }
-
-    private bool Insertar(Ocupaciones ocupacion)
-    {
-        _contexto.Ocupaciones.Add(ocupacion);
-        int cantidad = _contexto.SaveChanges();
+       await _contexto.Ocupaciones.AddAsync(ocupacion);
+        int cantidad = await _contexto.SaveChangesAsync();
         return cantidad > 0;
     }
 
-    private bool Modificar(Ocupaciones ocupacion)
+    private async Task<bool> Modificar(Ocupaciones ocupacion)
     {
         _contexto.Entry(ocupacion).State = EntityState.Modified;
-        int cantidad = _contexto.SaveChanges();
-        return cantidad > 0;
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
-    public Ocupaciones Buscar(int ocupacionId)
+    public async Task<bool> Eliminar(Ocupaciones ocupacion){
+        _contexto.Entry(ocupacion).State = EntityState.Deleted;
+        return  await _contexto.SaveChangesAsync() > 0;
+     }
+
+    public async Task<Ocupaciones?> Buscar(int ocupacionId)
     {
-        var ocupacion = _contexto.Ocupaciones.Find(ocupacionId);
-
-        return ocupacion; 
+        return await _contexto.Ocupaciones
+         .Where(o=> o.OcupacionId == ocupacionId)
+        .AsNoTracking()
+        .SingleOrDefaultAsync();
+          
     }
 
-    public List<Ocupaciones> GetOcupaciones()
-    {
-        return _contexto.Ocupaciones.ToList();
-    }
-     public bool Eliminar(Ocupaciones ocupacion){
-            _contexto.Entry(ocupacion).State = EntityState.Deleted;
-            return _contexto.SaveChanges() > 0;
+     public async Task<List<Ocupaciones>> GetOcupaciones(Expression<Func<Ocupaciones, bool>> Criterio){
+            return await _contexto.Ocupaciones
+                .AsNoTracking()
+                .Where(Criterio)
+                .ToListAsync();
         }
+   
 
 }
 }

@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Registro.DAL;
+using Registro.Data;
 using  Registro.Model;
 
 namespace Registro.BLL
@@ -14,60 +14,60 @@ namespace Registro.BLL
                _contexto = contexto;
           }
 
-          public bool Existe(int PersonaId)
-          {
-               return _contexto.Persona.Any(o => o.PersonaId == PersonaId);
-          }
+         public async Task<bool> Existe(int personaId)
+        {
+            return  await _contexto.Persona.AnyAsync(o => o.PersonaId == personaId);
+        }
 
-          private bool Insertar(Persona persona)
+          private async Task<bool> Insertar(Persona persona)
           {
-               _contexto.Persona.Add(persona);
-               int cantidad = _contexto.SaveChanges();
-                return cantidad > 0;
+             await _contexto.Persona.AddAsync(persona);
+               int cantidad = await _contexto.SaveChangesAsync();
+               return cantidad > 0;
           }    
 
-          private bool Modificar(Persona persona)
+          private async Task<bool> Modificar(Persona persona)
           {
                _contexto.Entry(persona).State = EntityState.Modified;
-               return _contexto.SaveChanges() > 0;
+               return await _contexto.SaveChangesAsync() > 0;
           }
 
-          public bool Guardar(Persona persona)
+          public async Task<bool>  Guardar(Persona persona)
           {
-               if (!Existe(persona.PersonaId))
-                    return this.Insertar(persona);
+               if (!await Existe(persona.PersonaId))
+                    return await this.Insertar(persona);
                else
-                    return this.Modificar(persona);
+                    return await this.Modificar(persona);
           }
 
-          public bool Eliminar(Persona persona)
-          {
+          public async Task<bool> Eliminar(Persona persona){
+     
                _contexto.Entry(persona).State = EntityState.Deleted;
-               return _contexto.SaveChanges() > 0;
+               return  await _contexto.SaveChangesAsync() > 0;
+     }
+
+          public  async Task<Persona?> Buscar(int personaId)
+          {
+               return await _contexto.Persona
+                    .Where(o=> o.PersonaId == personaId)
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync();
+
           }
 
-          public Persona? Buscar(int personaId)
+          public async Task<List<Persona>> GetPersonas(Expression<Func<Persona, bool>> Criterio)
           {
-               return _contexto.Persona
-                       .Where(o => o.PersonaId == personaId)
-                       .AsNoTracking()
-                       .SingleOrDefault();
-
-          }
-
-          public List<Persona> GetList(Expression<Func<Persona, bool>> Criterio)
-          {
-               return _contexto.Persona
+               return await _contexto.Persona
                    .AsNoTracking()
                    .Where(Criterio)
-                   .ToList();
+                   .ToListAsync();
           }
-         public List<Ocupaciones> GetOcupaciones(Expression<Func<Ocupaciones, bool>> Criterio){
-            return _contexto.Ocupaciones
+         public async Task<List<Ocupaciones>> GetOcupaciones(Expression<Func<Ocupaciones, bool>> Criterio){
+            return await _contexto.Ocupaciones
                 .AsNoTracking()
                 .Where(Criterio)
-                .ToList();
-        }
+                .ToListAsync();
+      }
 
      }
 }

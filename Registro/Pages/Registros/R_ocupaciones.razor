@@ -68,7 +68,7 @@
 
     public List<Ocupaciones> lista { get; set; } = new List<Ocupaciones>();
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
         if (OcupacionId > 0)
         {
@@ -89,10 +89,10 @@
         return ocupacion.Descripcion.Contains(".");
     }
 
-    public void Guardar()
+    public async Task Guardar()
     {
 
-        bool guardado = OcupacionesBLL.Guardar(ocupacion);
+        bool guardado = await OcupacionesBLL.Guardar(ocupacion);
 
         if (guardado)
         {
@@ -105,11 +105,11 @@
         }
     }
 
-    private void Buscar()
+    private async Task  Buscar()
     {
         if (ocupacion.OcupacionId > 0)
         {
-            var encontrado = OcupacionesBLL.Buscar(ocupacion.OcupacionId);
+            var encontrado = await OcupacionesBLL.Buscar(ocupacion.OcupacionId);
 
             if (encontrado != null)
             {
@@ -123,12 +123,10 @@
         }
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
 
-        elimino = OcupacionesBLL.Eliminar(ocupacion);
-
+        var elimino = await OcupacionesBLL.Eliminar(ocupacion);
         if (elimino)
         {
             Nuevo();

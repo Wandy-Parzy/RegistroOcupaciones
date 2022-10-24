@@ -50,7 +50,7 @@
                     <label>Persona</label>
                     <InputSelect class="form-select" @bind-Value="persona.PersonaId">
                         <option value="0" disabled> Seleccione uno </option>
-                        @foreach (var persona in P_lista)
+                        @foreach (var persona in listaPersonas)
                         {
                             <option value="@persona.PersonaId"> @persona.Nombre</option>
                         }
@@ -72,8 +72,20 @@
                     <ValidationMessage For="@(() => pago.Monto)" />
                 </div>
 
-
-                <div class="card-header">
+                <div class="card-footer">
+                    <div class="mb-3 text-center" display: inline-block>
+                        <button type="button" class="btn btn-lg btn-primary" @onclick="Editar">
+                            <i class="oi oi-file" /> Editar
+                        </button>
+                        <button type="submit" class="btn btn-lg btn-success">
+                            <i class="oi oi-document" /> Guardar
+                        </button>
+                        <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">
+                            <i class="oi oi-trash" /> Eliminar
+                        </button>
+                    </div>
+                </div>
+             <div class="card-header">
                     <h3>Pagos de detalle</h3>
                 </div>
 
@@ -85,7 +97,7 @@
                             <label>PrestamoId</label>
                             <InputSelect class="form-select" @bind-Value="prestamo.PrestamoId">
                                 <option value="0" disabled> Seleccione uno </option>
-                                @foreach (var prestamos in Plista)
+                                @foreach (var prestamos in listaPrestamos)
                                 {
                                     <option value="@prestamos.PrestamoId"> @prestamos.Concepto</option>
                                 }
@@ -123,20 +135,6 @@
                         </tbody>
                     </table>
                 </form>
-
-                <div class="card-footer">
-                    <div class="mb-3 text-center" display: inline-block>
-                        <button type="button" class="btn btn-lg btn-primary" @onclick="Editar">
-                            <i class="oi oi-file" /> Editar
-                        </button>
-                        <button type="submit" class="btn btn-lg btn-success">
-                            <i class="oi oi-document" /> Guardar
-                        </button>
-                        <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">
-                            <i class="oi oi-trash" /> Eliminar
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -156,16 +154,16 @@
     public PagosDetalle pagosDetalle = new PagosDetalle();
 
     public List<Pagos> lista { get; set; } = new List<Pagos>();
-    public List<Persona> P_lista = new List<Persona>();
-    public List<Prestamos> Plista = new List<Prestamos>();
+    public List<Persona> listaPersonas = new List<Persona>();
+    public List<Prestamos> listaPrestamos = new List<Prestamos>();
     public List<PagosDetalle> detalles = new List<PagosDetalle>();
 
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        P_lista = personaBLL.GetList(o => true);
-        Plista = prestamoBLL.GetList(o => true);
-        lista = pagosBLL.GetList(o => true);
+        listaPersonas = await personaBLL.GetPersonas(o => true);
+        listaPrestamos = await prestamoBLL.GetPrestamos(o => true);
+        lista = await pagosBLL.GetPagos(o => true);
         if (PagoId > 0)
         {
 
@@ -177,20 +175,16 @@
     public void Nuevo()
     {
         pago = new Pagos();
-        pago.Fecha = DateTime.Now;
+      //  pago.Fecha = DateTime.Now;
         notificacion.ShowNotification("Nueva plantilla.", NotificationSeverity.Success);
 
     }
 
-    public void AddDetalle()
+    public  async Task AddDetalle()
     {
 
         this.pago.Detalles.Add(new PagosDetalle(Id, PagoId, PrestamoId, ValorPagado));
 
-    }
-    private void RemoverFila(PagosDetalle pagosDetalles)
-    {
-        this.pago.Detalles.Remove(pagosDetalles);
     }
 
     bool Validar()
@@ -198,11 +192,10 @@
         return pago.Concepto.Contains("");
     }
 
-    public void Guardar()
+    public async Task Guardar()
     {
-
-        bool guardado = pagosBLL.Guardar(pago);
-
+       
+        bool guardado = await pagosBLL.Guardar(pago);
         if (guardado)
         {
             Nuevo();
@@ -214,11 +207,11 @@
         }
     }
 
-    private void Buscar()
+    private  async Task Buscar()
     {
         if (pago.PagoId > 0)
         {
-            var encontrado = pagosBLL.Buscar(pago.PagoId);
+            var encontrado = await pagosBLL.Buscar(pago.PagoId);
 
             if (encontrado != null)
             {
@@ -233,9 +226,9 @@
     }
 
 
-    public void Eliminar()
+    public  async Task Eliminar()
     {
-        var elimino = pagosBLL.Eliminar(Id);
+        var elimino = await pagosBLL.Eliminar(pago);
         if (elimino)
         {
             Nuevo();
@@ -246,10 +239,10 @@
             notificacion.ShowNotification("No fue eliminado.", NotificationSeverity.Error);
         }
     }
-    public void Editar()
+    public  async Task Editar()
     {
 
-        var editar = pagosBLL.Editar(pago);
+        var editar = await pagosBLL.Editar(pago);
         if (editar)
         {
             Nuevo();

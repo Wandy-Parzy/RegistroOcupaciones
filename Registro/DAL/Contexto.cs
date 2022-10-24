@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Registro.Model;
 
-namespace Registro.DAL{
-public class Contexto : DbContext
+namespace Registro.Data{
+public class Contexto : IdentityDbContext
 {
     public DbSet<Ocupaciones> Ocupaciones { get; set; }
 

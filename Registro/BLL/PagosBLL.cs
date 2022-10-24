@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Registro.DAL;
+using Registro.Data;
 using  Registro.Model;
 
 namespace Registro.BLL
@@ -13,123 +13,124 @@ namespace Registro.BLL
           {
                _contexto = contexto;
           }
-                    public bool Existe(int PagoId)
+           public async Task<bool> Existe(int pagoId)
+        {
+            return await _contexto.Pagos.AnyAsync(o => o.PagoId == pagoId);
+        }
+
+
+        public async Task<bool> Editar(Pagos pago)
+        {
+            _contexto.Entry(pago).State = EntityState.Modified;
+            return await _contexto.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> Guardar(Pagos pago)
           {
-               return _contexto.Pagos.Any(o => o.PagoId == PagoId);
-          }
+               var existe = await Existe(pago.PagoId);
 
-          private bool Insertar(Pagos pago)
-          {
-                bool paso = false;
+                if (!existe)
+                  return await this.Insertar(pago);
+                else
+                  return await this.Modificar(pago);
+           }
 
-               try
-               {  
-                    if (_contexto.Pagos.Add(pago) != null)
-                         paso = _contexto.SaveChanges() > 0;
-               }
-               catch (Exception)
-               {
-                    throw;
-               }
+         private async Task<bool> Insertar(Pagos pago)
+        {
+            await _contexto.Pagos.AddAsync(pago);
 
-               return paso;
-          }
+            foreach (var item in pago.Detalles)
+            {
+                var prestamo = await _contexto.Prestamos.FindAsync(item.PrestamoId);
+                prestamo!.Balance -= item.ValorPagado;
+            }
 
-          private bool Modificar(Pagos pago)
-          {
-                bool paso = false;
+            var persona = await _contexto.Persona.FindAsync(pago.PersonaId);
+            persona!.Balance -= pago.Monto;
 
-               try
-               {
-                    _contexto.Database.ExecuteSqlRaw($"DELETE FROM PagosDetalles WHERE PrestamoId={pago.PagoId}");
+            var insertados = await _contexto.SaveChangesAsync();
 
-                    foreach (var Anterior in pago.Detalles)
-                    {
-                    _contexto.Entry(Anterior).State = EntityState.Added;
-                    }
+            return insertados > 0;
+        }
 
-                    _contexto.Entry(pago).State = EntityState.Modified;
+           private async Task<bool> Modificar(Pagos pagoActual)
+        {
+            var pagoAnterior = await _contexto.Pagos
+                 .Where(p => p.PagoId == pagoActual.PagoId)
+                 .AsNoTracking()
+                 .SingleOrDefaultAsync();
 
-                    paso = _contexto.SaveChanges() > 0;
-               }
-               catch (Exception)
-               {
-                    throw;
-               }
-               return paso;
-          }
+            //revertir el balance pagado a la persona.
+            var persona = await _contexto.Persona.FindAsync(pagoAnterior!.PersonaId);
+            persona!.Balance += pagoAnterior.Monto;
 
-          public bool Guardar(Pagos pago)
-          {
-               if (!Existe(pago.PagoId))
-                    return this.Insertar(pago);
-               else
-                    return this.Modificar(pago);
-          }
+            //revertir el balance pagado a los prestamos
+            foreach (var item in pagoAnterior.Detalles)
+            {
+                var prestamos = await _contexto.Prestamos.FindAsync(item.PrestamoId);
+                prestamos!.Balance += item.ValorPagado;
+            }
 
-          public bool Eliminar(int Id)
-          {
-            bool paso = false;
+            //borrar el detalle anterior
+            await _contexto.Database.ExecuteSqlRawAsync($"Delete FROM PagosDetalle Where PagoId = {pagoActual.PagoId}");
 
-               try
-               {
-                    var pago = _contexto.Pagos.Find(Id);
+            foreach (var item in pagoActual.Detalles)
+            {
+                _contexto.Entry(item).State = EntityState.Added;
 
-                    if (pago != null)
-                    {
-                    _contexto.Pagos.Remove(pago);
-                    paso = _contexto.SaveChanges() > 0;
-                    }
-               }
-               catch (Exception)
-               {
-                    throw;
-               }
+                //afectar los prestamos segun el nuevo valor pagado.
+                var prestamo = await _contexto.Prestamos.FindAsync(item.PrestamoId);
+                prestamo!.Balance -= item.ValorPagado;
+            }
 
-               return paso;
-          }
+            //reafectar el balance de la persona con el monto pagado.
+            persona.Balance -= pagoActual.Monto;
 
-             public bool Editar(Pagos Pago)
-          {
-               if (!Existe(Pago.PagoId))
-                    return this.Insertar(Pago);
-               else
-                    return this.Modificar(Pago);
-          }
+            //marcar el prestamo como modificado
+            _contexto.Entry(pagoActual).State = EntityState.Modified;
+            
+            //finalmente guardar
+            var cantidad = await _contexto.SaveChangesAsync();
 
-          public Pagos? Buscar(int Id)
-          {
-             Pagos pago;
-               
-               try
-               {
-                    pago = _contexto.Pagos.Include(x => x.Detalles).Where(c => c.PagoId == Id).SingleOrDefault();
-               }
-               catch (Exception)
-               {
-                    throw;
-               }
+            //liberar la instancia de pago para evitar que EF de error.
+            _contexto.Entry(pagoActual).State = EntityState.Detached;
+            return cantidad > 0;
+        }
 
-               return pago;
+        public async Task<bool> Eliminar(Pagos pago)
+        {
+            var persona = await _contexto.Persona.FindAsync(pago.PersonaId);
+            persona!.Balance += pago.Monto;
 
-          }
+            foreach (var item in pago.Detalles)
+            {
+                var prestamos = await _contexto.Prestamos.FindAsync(item.PrestamoId);
+                prestamos!.Balance += item.ValorPagado;
+            }
 
-          public List<Pagos> GetList(Expression<Func<Pagos, bool>> Criterio)
-          {
-              List<Pagos> lista = new List<Pagos>();
+            _contexto.Entry(pago).State = EntityState.Deleted;
+            var cantidad = await _contexto.SaveChangesAsync();
+            return cantidad > 0;
+        }
+              
+           public async Task<Pagos?> Buscar(int pagoId)
+        {
+            var pago = await _contexto.Pagos
+            .Where(o => o.PagoId == pagoId)
+            .Include(o => o.Detalles)
+            .AsNoTracking()
+            .SingleOrDefaultAsync();
+            
+            return pago;
+        }
 
-               try
-               {
-                    lista = _contexto.Pagos.Where(Criterio).ToList();
-               }
-               catch (Exception)
-               {
-                    throw;
-               }
-
-               return lista;
-          }
-          
-
+          public async Task< List<Pagos>> GetPagos(Expression<Func<Pagos, bool>> Criterio)
+        {
+            return await _contexto.Pagos
+                .Where(Criterio)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+     
      }
 }

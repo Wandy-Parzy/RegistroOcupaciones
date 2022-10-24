@@ -1,7 +1,7 @@
 @page "/C_prestamo"
 @inject PrestamoBLL prestamoBLL
 
-<EditForm Model="lista">
+<EditForm Model="listaPrestamos">
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in P_lista)
+                @foreach (var item in listaPrestamos)
                 {
                     <tr>
                         <td>@item.PrestamoId</td>
@@ -53,16 +53,18 @@
 
     public Prestamos prestamos { get; set; } = new Prestamos();
     
-    public List<Persona> lista { get; set; } = new List<Persona>();
-    public List<Prestamos> P_lista { get; set; } = new List<Prestamos>();
+    public List<Persona> listaPersonas { get; set; } = new List<Persona>();
+    public List<Prestamos> listaPrestamos { get; set; } = new List<Prestamos>();
+         
+ 
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
     }
     
-    private void Buscar()
+    private async Task Buscar()
     {   
-        P_lista = prestamoBLL.GetList(o => true);
+        listaPrestamos = await prestamoBLL.GetPrestamos(o => true);
     }
 }

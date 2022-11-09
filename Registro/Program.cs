@@ -11,12 +11,7 @@ using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<NotificationService>();
 
-builder.Services.AddScoped<OcupacionesBLL>();
-builder.Services.AddScoped<PersonaBLL>();
-builder.Services.AddScoped<PrestamoBLL>();
-builder.Services.AddScoped<PagosBLL>();
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -28,6 +23,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+
+builder.Services.AddScoped<NotificationService>();
+
+builder.Services.AddScoped<OcupacionesBLL>();
+builder.Services.AddScoped<PersonaBLL>();
+builder.Services.AddScoped<PrestamoBLL>();
+builder.Services.AddScoped<PagosBLL>();
 
 var app = builder.Build();
 

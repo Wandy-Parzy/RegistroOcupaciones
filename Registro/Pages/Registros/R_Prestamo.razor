@@ -37,7 +37,6 @@
                     <ValidationMessage For="@(() => prestamos.Fecha)" />
                 </div>
 
-
                 @*Vence*@
                 <div class="form-group">
                     <label>Vence</label>
@@ -107,7 +106,7 @@
     public List<Prestamos> listaPrestamos = new List<Prestamos>();
     public int prestamoId { get; set; }
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         listaPersonas = await personaBLL.GetPersonas(p => true);
         if (prestamoId > 0)

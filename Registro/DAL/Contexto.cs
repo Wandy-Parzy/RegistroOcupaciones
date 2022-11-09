@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Registro.Model;
 
-namespace Registro.Data{
+namespace Registro.Data;
 public class Contexto : IdentityDbContext
 {
     public DbSet<Ocupaciones> Ocupaciones { get; set; }
@@ -18,5 +18,5 @@ public class Contexto : IdentityDbContext
     }
 
 }
-}
+
  

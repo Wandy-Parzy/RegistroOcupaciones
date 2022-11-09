@@ -110,12 +110,12 @@
     public int personaId { get; set; }
 
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (personaId > 0)
         {
             this.personas.PersonaId = personaId;
-            this.Buscar();
+            await this.Buscar();
 
         }
         listaOcupaciones = await personaBLL.GetOcupaciones(c => true);

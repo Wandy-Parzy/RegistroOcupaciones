@@ -1,4 +1,4 @@
-@page "/C_pagos"
+ @page "/C_pagos"
 @inject PagosBLL pagosBLL
 
 <EditForm Model="listaPagos">
@@ -56,7 +56,7 @@
     
     private async Task Buscar()
     {
-        listaPagos = await pagosBLL.GetPagos(o => true);
+        listaPagos = await pagosBLL.GetList(o => true);
     }
 
 }

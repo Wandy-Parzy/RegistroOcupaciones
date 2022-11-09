@@ -42,7 +42,7 @@ namespace Registro.BLL
 
           public async Task<bool> Eliminar(Persona persona){
      
-               _contexto.Entry(persona).State = EntityState.Deleted;
+          _contexto.Entry(persona).State = EntityState.Deleted;
                return  await _contexto.SaveChangesAsync() > 0;
      }
 

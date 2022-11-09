@@ -68,12 +68,12 @@
 
     public List<Ocupaciones> lista { get; set; } = new List<Ocupaciones>();
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (OcupacionId > 0)
         {
             this.ocupacion.OcupacionId = OcupacionId;
-            this.Buscar();
+          await this.Buscar();
         }
     }
 
